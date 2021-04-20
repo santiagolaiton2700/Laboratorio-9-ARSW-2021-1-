@@ -23,6 +23,7 @@ Cuando un conjunto de usuarios consulta un enésimo número (superior a 1000000)
     * Username = scalability_lab
     * SSH publi key = Su llave ssh publica
 
+
 ![Imágen 1](images/part1/part1-vm-basic-config.png)
 
 2. Para conectarse a la VM use el siguiente comando, donde las `x` las debe remplazar por la IP de su propia VM.
@@ -30,6 +31,7 @@ Cuando un conjunto de usuarios consulta un enésimo número (superior a 1000000)
     `ssh scalability_lab@xxx.xxx.xxx.xxx`
 
 3. Instale node, para ello siga la sección *Installing Node.js and npm using NVM* que encontrará en este [enlace](https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/).
+   ![Imágen 1](images/instalacion/version de nodejs.png)
 4. Para instalar la aplicación adjunta al Laboratorio, suba la carpeta `FibonacciApp` a un repositorio al cual tenga acceso y ejecute estos comandos dentro de la VM:
 
     `git clone <your_repo>`
@@ -44,25 +46,38 @@ Cuando un conjunto de usuarios consulta un enésimo número (superior a 1000000)
 
     `forever start FibinacciApp.js`
 
+
 6. Antes de verificar si el endpoint funciona, en Azure vaya a la sección de *Networking* y cree una *Inbound port rule* tal como se muestra en la imágen. Para verificar que la aplicación funciona, use un browser y user el endpoint `http://xxx.xxx.xxx.xxx:3000/fibonacci/6`. La respuesta debe ser `The answer is 8`.
 
 ![](images/part1/part1-vm-3000InboudRule.png)
 
 7. La función que calcula en enésimo número de la secuencia de Fibonacci está muy mal construido y consume bastante CPU para obtener la respuesta. Usando la consola del Browser documente los tiempos de respuesta para dicho endpoint usando los siguintes valores:
     * 1000000
+      ![Imágen 1](images/instalacion/1000000.png)
     * 1010000
+      ![Imágen 1](images/instalacion/1010000.png)
     * 1020000
+      ![Imágen 1](images/instalacion/1020000.png)
     * 1030000
+      ![Imágen 1](images/instalacion/1030000.png)
     * 1040000
+      ![Imágen 1](images/instalacion/1040000.png)
     * 1050000
+      ![Imágen 1](images/instalacion/1050000.png)
     * 1060000
+      ![Imágen 1](images/instalacion/1060000.png)
     * 1070000
+      ![Imágen 1](images/instalacion/1070000.png)
     * 1080000
+      ![Imágen 1](images/instalacion/1080000.png)
     * 1090000    
+      ![Imágen 1](images/instalacion/1090000.png)
 
 8. Dírijase ahora a Azure y verifique el consumo de CPU para la VM. (Los resultados pueden tardar 5 minutos en aparecer).
 
 ![Imágen 2](images/part1/part1-vm-cpu.png)
+
+![Imágen 1](images/instalacion/estadisticas.png)
 
 9. Ahora usaremos Postman para simular una carga concurrente a nuestro sistema. Siga estos pasos.
     * Instale newman con el comando `npm install newman -g`. Para conocer más de Newman consulte el siguiente [enlace](https://learning.getpostman.com/docs/postman/collection-runs/command-line-integration-with-newman/).
@@ -74,6 +89,7 @@ Cuando un conjunto de usuarios consulta un enésimo número (superior a 1000000)
     newman run ARSW_LOAD-BALANCING_AZURE.postman_collection.json -e [ARSW_LOAD-BALANCING_AZURE].postman_environment.json -n 10 &
     newman run ARSW_LOAD-BALANCING_AZURE.postman_collection.json -e [ARSW_LOAD-BALANCING_AZURE].postman_environment.json -n 10
     ```
+   ![Imágen 1](images/instalacion/newman.png)
 
 10. La cantidad de CPU consumida es bastante grande y un conjunto considerable de peticiones concurrentes pueden hacer fallar nuestro servicio. Para solucionarlo usaremos una estrategia de Escalamiento Vertical. En Azure diríjase a la sección *size* y a continuación seleccione el tamaño `B2ms`.
 
@@ -86,15 +102,36 @@ Cuando un conjunto de usuarios consulta un enésimo número (superior a 1000000)
 **Preguntas**
 
 1. ¿Cuántos y cuáles recursos crea Azure junto con la VM?
+   Hay 5 recursos que se crean con la maquina virtual
+   - Interfaz de red
+   - Disco Duro
+   - Clave SSH
+   - Dirección IP Publica
+   - Grupo de seguridad de red
 2. ¿Brevemente describa para qué sirve cada recurso?
+   - Ip publica: Es aquella que nos ofrece el proveedor de acceso a internet y se asigna a cualquier equipo o dispositivo conectado de forma directa a internet.
+   - Una interfaz de red: Es el software específico de red que se comunica con el controlador de dispositivo específico de red y la capa IP a fin de proporcionar a la capa IP una interfaz coherente con todos los adaptadores de red que puedan estar presentes.
+   - Disco Duro: Son dispositivos de almacenamiento de datos en los que podemos almacenar cualquier tipo de información digital. Ya sean fotografías, vídeos, archivos de texto o programas informáticos, el disco duro es una de las partes más importantes de cualquier sistema informático.
+   - Clave SSH: Es uno de los dos archivos utilizados en un método de autenticación conocido como autenticación de clave pública SSH. En este método de autenticación, un archivo (conocido como la clave privada) generalmente se mantiene en el lado del cliente y el otro archivo (conocido como la clave pública) se almacena en el lado del servidor.
+   - Grupo de seguridad: El grupo de seguridad de red de Azure para filtrar el tráfico de red hacia y desde los recursos de Azure de una red virtual de Azure. Un grupo de seguridad de red contiene reglas de seguridad que permiten o deniegan el tráfico de red entrante o el tráfico de red saliente de varios tipos de recursos de Azure.
 3. ¿Al cerrar la conexión ssh con la VM, por qué se cae la aplicación que ejecutamos con el comando `npm FibonacciApp.js`? ¿Por qué debemos crear un *Inbound port rule* antes de acceder al servicio?
+   Al momento de realizar la conexión con la aplicación se crea un proceso que inicia la aplicación, por lo tanto cuando detenemos la maquina el proceso finaliza  de ejecutar la aplicación. La inbound port rule se realiza por el puerto 3000 para desplegar la aplicación de NODEJS y asi poderle hacer peticiones a la aplicación.
 4. Adjunte tabla de tiempos e interprete por qué la función tarda tando tiempo.
+   
+   ![Imágen 1](images/instalacion/tabla.png)
+   - El cambio que se hace al hardware no consideramos que es directamente propocional al rendimiento que evidenciamos en los datos.
 5. Adjunte imágen del consumo de CPU de la VM e interprete por qué la función consume esa cantidad de CPU.
+   
 6. Adjunte la imagen del resumen de la ejecución de Postman. Interprete:
     * Tiempos de ejecución de cada petición.
     * Si hubo fallos documentelos y explique.
 7. ¿Cuál es la diferencia entre los tamaños `B2ms` y `B1ls` (no solo busque especificaciones de infraestructura)?
+   ![Imágen 1](images/instalacion/TablaVs.png)
+   
+   -El tamaño B1ls tiene mucha menos capacidad y es mucho mas barato que el B2ms por lo que podemos concluir que estos tamaños son usados para un ambiente de pruebas a bajo costo.
 8. ¿Aumentar el tamaño de la VM es una buena solución en este escenario?, ¿Qué pasa con la FibonacciApp cuando cambiamos el tamaño de la VM?
+   
+   -Es que cuando se le hacen dichos cambios de hardware o se detiene la maquina toca volver a hacer el despliege para que el aplicativo siga estando disponible para recibir peticiones.
 9. ¿Qué pasa con la infraestructura cuando cambia el tamaño de la VM? ¿Qué efectos negativos implica?
 10. ¿Hubo mejora en el consumo de CPU o en los tiempos de respuesta? Si/No ¿Por qué?
 11. Aumente la cantidad de ejecuciones paralelas del comando de postman a `4`. ¿El comportamiento del sistema es porcentualmente mejor?
@@ -108,6 +145,7 @@ Antes de continuar puede eliminar el grupo de recursos anterior para evitar gast
 1. El Balanceador de Carga es un recurso fundamental para habilitar la escalabilidad horizontal de nuestro sistema, por eso en este paso cree un balanceador de carga dentro de Azure tal cual como se muestra en la imágen adjunta.
 
 ![](images/part2/part2-lb-create.png)
+
 
 2. A continuación cree un *Backend Pool*, guiese con la siguiente imágen.
 
