@@ -258,7 +258,15 @@ Componente: Son productos incluidos en los paquetes, ensamblajes y colecciones, 
   - Permite filtrar el tráfico hacia y desde los recursos en una red virtual de Azure, un grupo de seguridad permite definir reglas de entrada y/o salida que permitan o denieguen el tráfico de red entrante o saliente de varios tipos de recursos de Azure.
    
 * Informe de newman 1 (Punto 2)
+
+![Imágen 1](images/instalacion/newmanpunto2.PNG)
+
+
 * Presente el Diagrama de Despliegue de la solución.
+
+
+![Imágen 1](images/instalacion/esquema.png)
+
 
 
 
